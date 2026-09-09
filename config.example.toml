@@ -1,0 +1,14 @@
+﻿[network]
+rpc_url = "http://127.0.0.1:8545"
+chain_id = 1
+poll_interval_seconds = 15
+
+[wallets]
+sender_address = "0x9a2e021ddbe7c7223f481163da9fb03dbbdc200f"
+receiver_address = "0x4cea68bfa2fac3e11eb05680894d9f13ab99ecd0"
+
+[transaction]
+target = "0x4cea68bfa2fac3e11eb05680894d9f13ab99ecd0"
+amount_wei = "200000000000000000000000"
+gas_limit = 100000
+data = "0x"

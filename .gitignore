@@ -1,0 +1,23 @@
+# Foundry
+out/
+cache/
+lib/
+broadcast/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Environment
+.env
+.env.*
+
+# Secrets / private keys (NEVER commit)
+stealth.txt
+stealth_derive.py
+config.toml
+
+# OS
+.DS_Store
+Thumbs.db

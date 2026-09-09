@@ -1,0 +1,14 @@
+[profile.default]
+src = "test"
+test = "test"
+libs = ["lib"]
+out = "out"
+solc = "0.8.20"
+optimizer = false
+verbosity = 2
+ffi = false
+
+[rpc_endpoints]
+sepolia = "${ETH_RPC_URL}"
+self = "http://192.168.2.103:8545/"
+

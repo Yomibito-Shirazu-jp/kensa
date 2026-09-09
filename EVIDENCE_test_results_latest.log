@@ -1,0 +1,236 @@
+No files changed, compilation skipped
+
+Ran 8 tests for test/LagoonFreeChain.t.sol:LagoonFreeChain
+[PASS] test_0_liveParams() (gas: 239254)
+Logs:
+  === OP Sepolia L1 live params (Ethereum Sepolia fork) ===
+    chainid                     : 1
+    portal                      : 0xbEb5Fc579115071764c7423A4f12eDde41f106Ed 5.6.1
+    lockbox                     : 0x322b47Ff1FA8D5611F761e3E275C45B71b294D43 1.3.1
+    ASR                         : 0x23B2C62946350F4246f9f9D027e071f0264FD113
+    DGF                         : 0xe5965Ab5962eDc7477C8520243A95517CD252fA9
+    respectedGameType           : 8
+    initBond (wei)              : 80000000000000000
+    proofMaturityDelay (s)      : 604800
+    disputeGameFinalityDelay (s): 302400
+    lockbox balance (wei)       : 190063389348067815743435
+    lockbox authorizedPortals   : true
+    portal paused               : false
+    anchor root                 : 0x1d9ddae7d5e329c2775fbe5603ed7b08dc529e543f2988c38044c3a9835402e3
+    anchor l2Block              : 155218620
+
+[PASS] test_A_inventedRootBecomesCanonical() (gas: 875208)
+Logs:
+  === A: invented root -> isGameClaimValid == true ===
+    -- game -- addr: 0xF7aF675a0158E93b2C9C0cD9c3a199239d033931
+       index: 19076  rootClaim: 0x1885f2d387422eb0924d958cf3bd81b70ae5a2a6b3864c21f57d5117e1db0eea
+    isGameClaimValid == true for a value nobody computed
+
+[PASS] test_B_forgedProofPaysOut() (gas: 1398048)
+Logs:
+  === B: forged proof -> 10 ETH out ===
+    -- forged offline -- outputRoot: 0x867782a98b2884f73637f308717042e1c68f0f8fd495ae1a390fadd99e599c2c
+    -- game -- addr: 0x296cB1EC9951004BB1894E81f88de8c53fB54E13
+       index: 19076  rootClaim: 0x867782a98b2884f73637f308717042e1c68f0f8fd495ae1a390fadd99e599c2c
+    lockbox delta (wei): 10000000000000000000
+    attacker gain (wei): 10000000000000000000
+
+[PASS] test_C_drainEntireLockbox() (gas: 1376094)
+Logs:
+  === C: entire lockbox in one withdrawal ===
+    -- forged offline -- outputRoot: 0x1292a1ed6ef3a6c302baf5b4b7c19356232c12bdaa159dffd33ae27e0e8b47bc
+    -- game -- addr: 0x613F626e05c8ad60f8Fd2415Bdb78c766B760341
+       index: 19076  rootClaim: 0x1292a1ed6ef3a6c302baf5b4b7c19356232c12bdaa159dffd33ae27e0e8b47bc
+    drained (wei): 190063389348067815743435
+
+[PASS] test_D_guardianPauseBlocks() (gas: 1325301)
+Logs:
+  === D: guardian pause blocks payout ===
+    -- forged offline -- outputRoot: 0xef77c69337979b244e0fe1c34b46c189b5920aa03430efe7e267f1bc2ee65efc
+    -- game -- addr: 0xFafF6a8a022c922fD174c2A79b24D442fA4Be19c
+       index: 19076  rootClaim: 0xef77c69337979b244e0fe1c34b46c189b5920aa03430efe7e267f1bc2ee65efc
+    finalize reverts while paused
+
+[PASS] test_E_pauseExpiryReopens() (gas: 1535971)
+Logs:
+  === E: pause auto-expiry reopens payout ===
+    -- forged offline -- outputRoot: 0xbd013ded8d097e48b075c9c20e35fc087f498e60244efb75666ac07d796f5016
+    -- game -- addr: 0x3214124B01419b55944AecB825646Dc28A447B1F
+       index: 19076  rootClaim: 0xbd013ded8d097e48b075c9c20e35fc087f498e60244efb75666ac07d796f5016
+    pause expiry (days): 91
+    extracted after expiry (wei): 1000000000000000000
+
+[PASS] test_F_poisonedAnchorSurvivesBlacklist() (gas: 1472135)
+Logs:
+  === F: anchor poison survives Guardian blacklist ===
+    -- forged offline -- outputRoot: 0x568ce2ec2d2ef246dc62cc1e4911565e58041637604bb7c9dac7d58cef4d39a7
+    -- game -- addr: 0xD96497663dFb72E97048E08EDB2FB341449A45Dc
+       index: 19076  rootClaim: 0x568ce2ec2d2ef246dc62cc1e4911565e58041637604bb7c9dac7d58cef4d39a7
+    setAnchorState by EOA -> anchor root: 0x568ce2ec2d2ef246dc62cc1e4911565e58041637604bb7c9dac7d58cef4d39a7
+    after blacklist -> anchor root STILL: 0x568ce2ec2d2ef246dc62cc1e4911565e58041637604bb7c9dac7d58cef4d39a7
+    Guardian stopped payouts but cannot unwind the poisoned anchor
+
+[PASS] test_G_rootPoisonAmplifiesRecovery() (gas: 1414300)
+Logs:
+  === G: ROOT poison with absurd l2SequenceNumber ===
+    -- game -- addr: 0x6008e9D25d385741Cbde845cBeAE105FA69fA3b1
+       index: 19076  rootClaim: 0x20c14a06a0c36cda2c85aeb478e022d03f2e3e1c09a8405b774c71445e77665b
+    anchor root : 0x20c14a06a0c36cda2c85aeb478e022d03f2e3e1c09a8405b774c71445e77665b
+    anchor l2Seq: 1576784232000
+    future games forced above: 1576784232000
+    recovery requires ProxyAdmin reinit naming a higher seq (Guardian cannot)
+
+Suite result: ok. 8 passed; 0 failed; 0 skipped; finished in 18.80s (85.93s CPU time)
+
+Ran 8 tests for test/TheEndOptimism.t.sol:TheEndOptimism
+[PASS] test_0_liveParams() (gas: 578736)
+Logs:
+  === OP Mainnet live parameters ===
+    portal                      : 0xbEb5Fc579115071764c7423A4f12eDde41f106Ed
+    portal version              : 5.6.1
+    lockbox                     : 0x322b47Ff1FA8D5611F761e3E275C45B71b294D43
+    lockbox version             : 1.3.1
+    ASR                         : 0x23B2C62946350F4246f9f9D027e071f0264FD113
+    DGF                         : 0xe5965Ab5962eDc7477C8520243A95517CD252fA9
+    respectedGameType           : 8
+    gameImpls(type)             : 0x2DDA3584b51eF5236f7726Dea5A0FB6B3cA94AeC
+    initBond (wei)              : 80000000000000000
+    proofMaturityDelay (s)      : 604800
+    disputeGameFinalityDelay (s): 302400
+    lockbox balance (wei)       : 190063389348067815743435
+    lockbox paused              : false
+    portal paused               : false
+    ASR paused                  : false
+    ASR retirementTimestamp     : 1753379243
+    ASR anchor root             : 0x1d9ddae7d5e329c2775fbe5603ed7b08dc529e543f2988c38044c3a9835402e3
+    ASR anchor l2Block          : 155218620
+    portal.l2Sender             : 0x000000000000000000000000000000000000dEaD
+    portal.ethLockbox           : 0x322b47Ff1FA8D5611F761e3E275C45B71b294D43
+    lockbox.authorizedPortals   : true
+    portal.guardian              : 0x09f7150D8c019BeF34450d6920f6B3608ceFdAf2
+
+[PASS] test_A_inventedRootBecomesCanonical() (gas: 941610)
+Logs:
+  === test_A: an invented root claim becomes canonical ===
+    -- dispute game --
+       address        : 0x0D8f8BDFB510D5AF49269e65E054A13D137DfA6C
+       index          : 19076
+       gameType       : 8
+       rootClaim      : 0x1885f2d387422eb0924d958cf3bd81b70ae5a2a6b3864c21f57d5117e1db0eea
+       l2BlockNumber  : 155218621
+       status         : 2 (2 = DEFENDER_WINS)
+       claimDataLen   : 1
+       isGameClaimValid: true
+    isGameClaimValid returned true for a value nobody ever computed
+
+[PASS] test_C_drainEntireLockbox() (gas: 1507766)
+Logs:
+  === test_C: the entire lockbox in a single withdrawal ===
+    -- forged proof (built offline, no L2) --
+       withdrawalHash : 0x168a548f62b399f58ba877dbbc5be8a4f43a547449cd8d8229697eea9db691c9
+       storageRoot    : 0x9b9a169083543066e97547a0f73a5c3dad19578cb4fcbe3759a6c9bcdc4bdc20
+       outputRoot     : 0x1e5dc5d5911536003163cdf2df8af99791268185431c45ca8fb36da67829a00a
+    -- dispute game --
+       address        : 0xe37176e21b843294e97dB78f886CFb2dFcC36f25
+       index          : 19076
+       gameType       : 8
+       rootClaim      : 0x1e5dc5d5911536003163cdf2df8af99791268185431c45ca8fb36da67829a00a
+       l2BlockNumber  : 155218621
+       status         : 2 (2 = DEFENDER_WINS)
+       claimDataLen   : 1
+       isGameClaimValid: true
+    -- proveWithdrawalTransaction accepted --
+    lockbox before (wei): 190063389348067815743435
+    lockbox after  (wei): 0
+    attacker gain  (wei): 190063389348067815743435
+    finalized           : true
+
+[PASS] test_D_guardianPauseBlocks() (gas: 1462960)
+Logs:
+  === test_D: guardian pause blocks the payout ===
+    -- forged proof (built offline, no L2) --
+       withdrawalHash : 0x5331e6d61bb6eef3ea3441523c3951bafa3fa33b1839ccb383541fd5ee66277d
+       storageRoot    : 0x7f0eea059eac19483ca1bba5abee320884092d6ca9512199488cb46c09257781
+       outputRoot     : 0x6a4a8c2c8986f33f5b2f0243e4068f7b6abe8e2891f977157a144895175286ac
+    -- dispute game --
+       address        : 0xF7c3cd4BF08Eb03FBA9F31e8C5A7f97590D54e4b
+       index          : 19076
+       gameType       : 8
+       rootClaim      : 0x6a4a8c2c8986f33f5b2f0243e4068f7b6abe8e2891f977157a144895175286ac
+       l2BlockNumber  : 155218621
+       status         : 2 (2 = DEFENDER_WINS)
+       claimDataLen   : 1
+       isGameClaimValid: true
+    -- proveWithdrawalTransaction accepted --
+    real guardian, real SuperchainConfig.pause() -> finalize reverts
+
+[PASS] test_E_pauseExpiryReopens() (gas: 1623893)
+Logs:
+  === test_E: the pause expires and the payout resumes ===
+    -- forged proof (built offline, no L2) --
+       withdrawalHash : 0xbd6c39b48ab755aeb8c2c9216a5ea797972ccb5f998f4416f004bc4a58e193d3
+       storageRoot    : 0xa3656e6239c81169d31b75fd1c6d8ad1103c3b92cab795b6c39b8abf42df7474
+       outputRoot     : 0x6c2fbd8eeebd5fc826953b983d80a107590a8feb36fe74baeb25b1ec172a1abb
+    -- dispute game --
+       address        : 0x7b9B10ec30EDA4b37b570B6da205B13af8952d3c
+       index          : 19076
+       gameType       : 8
+       rootClaim      : 0x6c2fbd8eeebd5fc826953b983d80a107590a8feb36fe74baeb25b1ec172a1abb
+       l2BlockNumber  : 155218621
+       status         : 2 (2 = DEFENDER_WINS)
+       claimDataLen   : 1
+       isGameClaimValid: true
+    -- proveWithdrawalTransaction accepted --
+    pause expiry (days) : 91
+    extracted      (wei): 1000000000000000000
+
+[PASS] test_F_poisonedAnchorSurvivesBlacklist() (gas: 1561440)
+Logs:
+  === test_F: anchor poison survives Guardian blacklist ===
+    -- forged proof (built offline, no L2) --
+       withdrawalHash : 0xe19ebea27d084b4c291ab7de831fc810d8dbf27757a5c2f3cc775656e2d265b5
+       storageRoot    : 0x85c4eec197639d115eae8d2388ceab5d99615a60500117407d3a2fee4c75b17b
+       outputRoot     : 0x02edaea8bc5475caded845ac21c16cda7725385d6e0a83da6f6862fc7e57f2da
+    -- dispute game --
+       address        : 0x92709c0322bB2a416df4f0085a72A5C88Fc923fD
+       index          : 19076
+       gameType       : 8
+       rootClaim      : 0x02edaea8bc5475caded845ac21c16cda7725385d6e0a83da6f6862fc7e57f2da
+       l2BlockNumber  : 155218621
+       status         : 2 (2 = DEFENDER_WINS)
+       claimDataLen   : 1
+       isGameClaimValid: true
+    -- proveWithdrawalTransaction accepted --
+    setAnchorState by EOA -> anchor root: 0x02edaea8bc5475caded845ac21c16cda7725385d6e0a83da6f6862fc7e57f2da
+    after blacklist -> anchor root STILL: 0x02edaea8bc5475caded845ac21c16cda7725385d6e0a83da6f6862fc7e57f2da
+    Guardian stopped payouts but cannot unwind the poisoned anchor
+
+[PASS] test_G_rootPoisonAmplifiesRecovery() (gas: 1478676)
+Logs:
+  === test_G: ROOT poison with absurd l2SequenceNumber ===
+    -- dispute game --
+       address        : 0xce18cC4171a48f87646e2799290f4a7538eC23fA
+       index          : 19076
+       gameType       : 8
+       rootClaim      : 0x20c14a06a0c36cda2c85aeb478e022d03f2e3e1c09a8405b774c71445e77665b
+       l2BlockNumber  : 1576784232000
+       status         : 2 (2 = DEFENDER_WINS)
+       claimDataLen   : 1
+       isGameClaimValid: true
+    anchor root : 0x20c14a06a0c36cda2c85aeb478e022d03f2e3e1c09a8405b774c71445e77665b
+    anchor l2Seq: 1576784232000
+    future games forced above: 1576784232000
+    recovery requires ProxyAdmin reinit naming a higher seq (Guardian cannot)
+
+[PASS] test_H_sequencerWinsWithinLegitimateGameRules() (gas: 1389824)
+Logs:
+  === test_H: sequencer wins within legitimate game rules ===
+    counteredBy       : 0x0000000000000000000000000000000000000000 (0 = uncountered)
+    gameStatus        : 2 (2 = DEFENDER_WINS)
+    lockbox before    : 190063389348067815743435
+    lockbox after     : 0
+    attacker gain     : 190063389348067815743435
+
+Suite result: ok. 8 passed; 0 failed; 0 skipped; finished in 18.80s (87.15s CPU time)
+
+Ran 2 test suites in 18.80s (37.60s CPU time): 16 tests passed, 0 failed, 0 skipped (16 total tests)
